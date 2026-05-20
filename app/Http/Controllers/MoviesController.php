@@ -14,8 +14,9 @@ class MoviesController extends Controller
      */
     public function index()
     {
-
-        return view('movies.index');
+        $movies = Movie::latest()->paginate(4);
+ 
+        return view('movies.index',compact('movies'))->with('i',(request()->input('page',1)-1)*4);
     }
     /**
      * Show the form for creating a new resource.
@@ -73,7 +74,7 @@ class MoviesController extends Controller
      */
     public function show(Movie $movie)
     {
-        //
+        return view('movies.show',compact('movie'));
     }
 
     /**
@@ -84,7 +85,8 @@ class MoviesController extends Controller
      */
     public function edit(Movie $movie)
     {
-        //
+        $genres=['Action','Romcom','Horror'];
+        return view('movie.edit',compact('movie','genres',));
     }
 
     /**
@@ -96,7 +98,29 @@ class MoviesController extends Controller
      */
     public function update(Request $request, Movie $movie)
     {
-        //
+       $request->validate([
+
+     'title'=>'required',
+     'genre'=>'required',
+       ]);
+    
+    $imageName = '';
+
+    if ($request->hasFile('poster')) {
+
+        $imageName = time().'.'.$request->poster->extension();
+
+        $request->poster->move(public_path('uploads'), $imageName);
+        $movie->poster =$imageName;
+
+    }
+   $movie->title = $request->title;
+   $movie->genre = $request->genre;
+   $movie->release_year=$request->release_year;
+   $movie->update();
+   return redirect()->route('movies.index')->with('sucess','Movie has been updated successfully');
+
+
     }
 
     /**
@@ -105,8 +129,10 @@ class MoviesController extends Controller
      * @param  \App\Movie  $movie
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Movie $movie)
+    public function destroy($id)
     {
-        //
+     $movie = Movie::findOrFail($id);
+     $movie->delete();
+     return redirect()->route('movies.index')->with('sucess', 'Movie has been deleted successfully.')   ;
     }
 }

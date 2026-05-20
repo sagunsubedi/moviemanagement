@@ -6,12 +6,12 @@
         <div class="row">
             <div class="col-lg-12">
             <div class="pull-left">
-                <h2>Add New Movie</h2>
+                <h2>Edit Movie</h2>
             </div>
             </div>
         </div>
-        
-         @if ($error->any())
+        @if ($error->any())
+
       <div class="altert alert-danger">
         <strong>oops!There were some problems with your input.</strong>
         <ul>
@@ -22,14 +22,16 @@
       </div>
             
         @endif
-        <form action="{{ route('movies.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('movies.update',$movie->id }}" method="POST" enctype="multipart/form-data">
+        
         @csrf
+        @method('PUT')
         <div class="row">
             <div class="col-12">
                 <div class="form-group row mb-3">
-                    <label for="title" class="col-sm-2 col-form-label">Title</label>
+                    <label for="title" class="col-sm-2 col-form-label" >Title</label>
                     <div class="col-sm-10">
-                        <input type="text" name="title" id="title" class="form-control">
+                        <input type="text" name="title" id="title" class="form-control" value="{{ $movie->titile }}">
                     </div>
                 </div>
 
@@ -40,8 +42,11 @@
                         <option value="">Select Genre</option>
                         @if($genres)
                         @foreach ($genres as $genre )
+                        @if ($genres == $movie->genre)
+                         <option value="{{ $genre }}" selected>{{ $genre }}</option>
+                     @else
                         <option value="{{ $genre }}">{{ $genre }}</option>
-    
+                        @endif
                          @endforeach
                          @endif
                        </select>
@@ -51,7 +56,7 @@
                       <div class="form-group row mb-3">
                     <label for="release_year" class="col-sm-2 col-form-label">Release Year</label>
                     <div class="col-sm-10">
-                        <input type="text" name="release_year" id="release_year" class="form-control">
+                        <input type="text" name="release_year" id="release_year" class="form-control" value="{{ $movie->release_year }}>
                     </div>
                 </div>
 
