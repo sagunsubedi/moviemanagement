@@ -4,7 +4,14 @@
   @if ($message = Session::get('success'))
   <div class="alert alert-success text center">{{ $message }}</div>
   @endif
-    
+
+    <form action="{{ url('my_search') }}" class="col-9 mb-3 mx-auto">
+      <div class="input-group">
+      <input type="search" name="search" id="" class="form-control" placeholder="Search by title">
+      <button class="btn btn-primary" mb-3>Search</button>
+      </div>
+      </form> 
+
     <table class="table">
   <thead>
     <tr>

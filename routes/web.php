@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use  App\Http\Controllers\MoviesController;
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,7 +14,14 @@ use  App\Http\Controllers\MoviesController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/movies');
 });
 
-Route::Resource('movies','MoviesController');
+Auth::routes();
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('movies', 'MoviesController');  
+});
+
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/my_search', 'MoviesController@my_search')->name('my_search');

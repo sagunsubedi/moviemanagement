@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Movie;
+use App\Title;
 use Illuminate\Http\Request;
 
 class MoviesController extends Controller
@@ -15,8 +16,8 @@ class MoviesController extends Controller
     public function index()
     {
         $movies = Movie::latest()->paginate(4);
- 
-        return view('movies.index',compact('movies'))->with('i',(request()->input('page',1)-1)*4);
+      
+        return view('movies.index',compact('movies'));
     }
     /**
      * Show the form for creating a new resource.
@@ -38,10 +39,11 @@ class MoviesController extends Controller
      */
     public function store(Request $request)
 {
+
     $request->validate([
         'title' => 'required',
         'genre' => 'required',
-        'poster' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        'poster' => 'required|file|mimes:jpg,jpeg,png,webp|max:2048'
     ]);
 
     $imageName = '';
@@ -86,7 +88,7 @@ class MoviesController extends Controller
     public function edit(Movie $movie)
     {
         $genres=['Action','Romcom','Horror'];
-        return view('movie.edit',compact('movie','genres',));
+        return view('movies.edit',compact('movie','genres'));
     }
 
     /**
@@ -118,7 +120,7 @@ class MoviesController extends Controller
    $movie->genre = $request->genre;
    $movie->release_year=$request->release_year;
    $movie->update();
-   return redirect()->route('movies.index')->with('sucess','Movie has been updated successfully');
+   return redirect()->route('movies.index')->with('success','Movie has been updated successfully');
 
 
     }
@@ -133,6 +135,20 @@ class MoviesController extends Controller
     {
      $movie = Movie::findOrFail($id);
      $movie->delete();
-     return redirect()->route('movies.index')->with('sucess', 'Movie has been deleted successfully.')   ;
+     return redirect()->route('movies.index')->with('success', 'Movie has been deleted successfully.')   ;
     }
+    
+       public function my_search(Request $request)
+{
+    $search = $request->search;
+
+    $movies = Movie::where('title', 'LIKE', "%{$search}%")->latest()->paginate(4);
+
+    return view('movies.index', compact('movies'));
 }
+
+}
+
+
+
+
