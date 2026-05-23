@@ -1,27 +1,41 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use  App\Http\Controllers\MoviesController;
+use App\Http\Controllers\MoviesController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
 Route::get('/', function () {
-    return redirect('/movies');
+    if (auth()->check()) {
+        return redirect('/movies');
+    }
+    return redirect('/login');
 });
 
 Auth::routes();
 
-Route::middleware(['auth'])->group(function () {
-    Route::resource('movies', 'MoviesController');  
-});
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/my_search', 'MoviesController@my_search')->name('my_search');
+Route::get('/my_search', [MoviesController::class, 'my_search'])->name('my_search');
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/movies', [MoviesController::class, 'index'])->name('movies.index');
+ Route::get('/movies/{movie}', [MoviesController::class, 'show'])->name('movies.show');
+
+    
+    Route::middleware(['admin'])->group(function () {
+
+        Route::get('/moviess/create', [MoviesController::class, 'create'])->name('movies.create');
+
+        Route::post('/movies', [MoviesController::class, 'store'])->name('movies.store');
+
+        Route::get('/movies/{movie}/edit', [MoviesController::class, 'edit'])->name('movies.edit');
+
+        Route::put('/movies/{movie}', [MoviesController::class, 'update'])->name('movies.update');
+        Route::patch('/movies/{movie}', [MoviesController::class, 'update']);
+
+        Route::delete('/movies/{movie}', [MoviesController::class, 'destroy'])->name('movies.destroy');
+
+    });
+   
+});

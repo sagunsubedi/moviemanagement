@@ -15,11 +15,16 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
+      
       <ul class="navbar-nav me-auto">
+    @if(auth()->check() && auth()->user()->role == 'admin')
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('movies.create') }}">Add New</a>
+            <a class="nav-link" href="{{ route('movies.create') }}">
+                Add New
+            </a>
         </li>
-      </ul>
+    @endif
+</ul>
       
       <form action="{{ route('logout') }}" method="POST" class="d-flex">
         @csrf

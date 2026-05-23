@@ -138,6 +138,7 @@ class MoviesController extends Controller
      return redirect()->route('movies.index')->with('success', 'Movie has been deleted successfully.')   ;
     }
     
+    
        public function my_search(Request $request)
 {
     $search = $request->search;
