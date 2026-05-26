@@ -20,12 +20,11 @@ Route::get('/my_search', [MoviesController::class, 'my_search'])->name('my_searc
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/movies', [MoviesController::class, 'index'])->name('movies.index');
- Route::get('/movies/{movie}', [MoviesController::class, 'show'])->name('movies.show');
 
     
     Route::middleware(['admin'])->group(function () {
 
-        Route::get('/moviess/create', [MoviesController::class, 'create'])->name('movies.create');
+        Route::get('/movies/create', [MoviesController::class, 'create'])->name('movies.create');
 
         Route::post('/movies', [MoviesController::class, 'store'])->name('movies.store');
 
@@ -37,5 +36,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/movies/{movie}', [MoviesController::class, 'destroy'])->name('movies.destroy');
 
     });
+    
+ Route::get('/movies/{movie}', [MoviesController::class, 'show'])->name('movies.show');     
    
 });
